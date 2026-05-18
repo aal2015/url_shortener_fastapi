@@ -6,7 +6,7 @@ import string
 
 from database import engine, Base, get_db
 from models import ShortURL
-from schemas import ShortURL_Request, OriginalURL_Response
+from schemas import ShortURL_Request, OriginalURL_Response, ShortURL_Response
 
 app = FastAPI()
 
@@ -20,12 +20,14 @@ def generate_short_code(length=6):
         for _ in range(length)
     )
 
-@app.post("/generateShortURL")
+@app.post(
+    "/generateShortURL",
+    response_model=ShortURL_Response
+)
 def generate_short_url(
     shortUrl: ShortURL_Request,
     db: Session = Depends(get_db)
 ):
-
     # Check if long URL already exists
     existing_long_url = db.query(ShortURL).filter(
         ShortURL.long_url == shortUrl.long_url

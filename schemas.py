@@ -9,3 +9,7 @@ class ShortURL_Request(BaseModel):
 
 class OriginalURL_Response(BaseModel):
     long_url: str
+
+class ShortURL_Response(BaseModel):
+    message: str
+    short_code: str
