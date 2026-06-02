@@ -90,6 +90,10 @@ def generate_short_url(
         "short_code": short_code
     }
 
+@app.get("/")
+def read_root():
+    return "Server is running"
+
 @app.get(
     "/getOriginalURL/{short_code}",
     response_model=OriginalURL_Response
