@@ -7,6 +7,7 @@ import string
 from database import engine, Base, get_db
 from models import ShortURL
 from schemas import ShortURL_Request, OriginalURL_Response, ShortURL_Response
+from rate_limiter import token_bucket_limiter
 
 app = FastAPI()
 
@@ -26,7 +27,8 @@ def generate_short_code(length=6):
 )
 def generate_short_url(
     shortUrl: ShortURL_Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    _: None = Depends(token_bucket_limiter)
 ):
     # Check if long URL already exists
     existing_long_url = db.query(ShortURL).filter(
@@ -94,7 +96,8 @@ def generate_short_url(
 )
 def get_original_url(
     short_code: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    _: None = Depends(token_bucket_limiter)
 ):
 
     short_url = db.query(ShortURL).filter(
